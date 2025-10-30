@@ -35,6 +35,19 @@ A comprehensive WordPress plugin for managing website cookies in compliance with
 - Automatic script blocking/enabling based on consent
 - Support for third-party scripts and iframes
 
+### 🔍 Automatic Script Scanner (NEW!)
+- **Zero-Code Setup**: No need to manually tag scripts - the scanner does it automatically!
+- **Intelligent Detection**: Recognizes 35+ popular services (Google Analytics, Facebook Pixel, etc.)
+- **Auto-Blocking**: Automatically blocks detected scripts until users consent
+- **Pattern Matching**: Uses URL and function pattern detection
+- **Custom Patterns**: Add your own script patterns for custom services
+- **Live Scanning**: Test scan any page to see what scripts are detected
+- **One-Click Activation**: Simply enable "Auto-Blocking" and it works!
+
+**Supported Services Include**:
+- **Analytics**: Google Analytics, Google Tag Manager, Matomo, Hotjar, Mixpanel, Segment, Amplitude, Heap, FullStory, LogRocket, and more
+- **Marketing**: Facebook Pixel, Google Ads, Twitter Ads, LinkedIn Insight, Pinterest Tag, TikTok Pixel, Bing Ads, Criteo, Taboola, Outbrain, and more
+
 ## Installation
 
 ### Manual Installation
@@ -93,9 +106,35 @@ Enable/disable cookie categories:
    - Customize their preferences via "Cookie Settings"
 3. Consent is saved for the configured expiry period
 
-### Implementing Cookie Blocking
+### Using the Automatic Script Scanner (Recommended!)
 
-To ensure third-party scripts only load when users consent, modify your script tags:
+The easiest way to get started - no coding required!
+
+1. **Navigate to Script Scanner**
+   - Go to **Cookie Compliance > Script Scanner** in your WordPress admin
+
+2. **Enable Auto-Blocking**
+   - Check the "Enable Auto-Blocking" option
+   - Click "Save Settings"
+   - That's it! 🎉
+
+3. **Test the Scanner (Optional)**
+   - Enter your homepage URL (or any page URL)
+   - Click "Scan Page"
+   - See what scripts are automatically detected
+
+4. **Add Custom Patterns (Optional)**
+   - If you have custom third-party scripts not in our database
+   - Use the "Add Custom Pattern" form
+   - Specify the category, URL pattern, and service name
+
+**How it works**: The scanner uses output buffering to automatically detect and block known third-party scripts before the page is sent to visitors. No theme modifications needed!
+
+**Supported Services**: The scanner recognizes 35+ services including Google Analytics, Google Tag Manager, Facebook Pixel, Google Ads, Hotjar, Mixpanel, and many more. See the Script Scanner page for the full list.
+
+### Manual Cookie Blocking (Advanced)
+
+If you prefer manual control or need to block scripts not in the scanner database, you can manually tag scripts:
 
 #### For Analytics Cookies (e.g., Google Analytics)
 

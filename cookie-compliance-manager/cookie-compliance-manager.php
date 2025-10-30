@@ -3,7 +3,7 @@
  * Plugin Name: Cookie Compliance Manager
  * Plugin URI: https://github.com/yourusername/cookie-compliance-manager
  * Description: A comprehensive WordPress plugin for managing website cookies in compliance with GDPR and CCPA regulations. Provides cookie consent banners, user preference management, and cookie blocking capabilities.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Your Name
  * Author URI: https://yourwebsite.com
  * License: MIT
@@ -18,10 +18,13 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('CCM_VERSION', '1.0.0');
+define('CCM_VERSION', '1.1.0');
 define('CCM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('CCM_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('CCM_PLUGIN_BASENAME', plugin_basename(__FILE__));
+
+// Load dependencies
+require_once CCM_PLUGIN_DIR . 'includes/class-script-scanner.php';
 
 class CookieComplianceManager {
 
@@ -61,6 +64,13 @@ class CookieComplianceManager {
         add_action('wp_ajax_ccm_save_consent', array($this, 'saveConsent'));
         add_action('wp_ajax_nopriv_ccm_save_consent', array($this, 'saveConsent'));
         add_action('wp_ajax_ccm_export_logs', array($this, 'exportLogs'));
+        add_action('wp_ajax_ccm_scan_page', array($this, 'scanPage'));
+
+        // Script scanner hooks
+        $scanner_settings = get_option('ccm_scanner_settings', array());
+        if (isset($scanner_settings['auto_block']) && $scanner_settings['auto_block']) {
+            add_action('template_redirect', array($this, 'startOutputBuffering'), 0);
+        }
 
         // Activation/Deactivation hooks
         register_activation_hook(__FILE__, array($this, 'activate'));
@@ -143,6 +153,15 @@ class CookieComplianceManager {
             'cookie-compliance-logs',
             array($this, 'renderLogsPage')
         );
+
+        add_submenu_page(
+            'cookie-compliance-manager',
+            __('Script Scanner', 'cookie-compliance-manager'),
+            __('Script Scanner', 'cookie-compliance-manager'),
+            'manage_options',
+            'cookie-compliance-scanner',
+            array($this, 'renderScannerPage')
+        );
     }
 
     /**
@@ -150,6 +169,7 @@ class CookieComplianceManager {
      */
     public function registerSettings() {
         register_setting('ccm_settings_group', 'ccm_settings', array($this, 'sanitizeSettings'));
+        register_setting('ccm_scanner_settings_group', 'ccm_scanner_settings', array($this, 'sanitizeScannerSettings'));
     }
 
     /**
@@ -463,6 +483,85 @@ class CookieComplianceManager {
 
         fclose($output);
         exit;
+    }
+
+    /**
+     * Sanitize scanner settings
+     */
+    public function sanitizeScannerSettings($input) {
+        $sanitized = array();
+        $sanitized['auto_block'] = isset($input['auto_block']) ? true : false;
+        return $sanitized;
+    }
+
+    /**
+     * Start output buffering to scan and block scripts
+     */
+    public function startOutputBuffering() {
+        ob_start(array($this, 'processOutput'));
+    }
+
+    /**
+     * Process output buffer to block scripts
+     */
+    public function processOutput($content) {
+        // Don't process admin pages
+        if (is_admin()) {
+            return $content;
+        }
+
+        // Don't process AJAX requests
+        if (defined('DOING_AJAX') && DOING_AJAX) {
+            return $content;
+        }
+
+        // Use the scanner to block scripts
+        return CCM_Script_Scanner::block_scripts($content);
+    }
+
+    /**
+     * AJAX handler to scan current page
+     */
+    public function scanPage() {
+        check_ajax_referer('ccm_scanner_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array('message' => 'Unauthorized'));
+        }
+
+        $url = isset($_POST['url']) ? esc_url_raw($_POST['url']) : '';
+
+        if (empty($url)) {
+            wp_send_json_error(array('message' => 'No URL provided'));
+        }
+
+        // Fetch the page content
+        $response = wp_remote_get($url);
+
+        if (is_wp_error($response)) {
+            wp_send_json_error(array('message' => $response->get_error_message()));
+        }
+
+        $content = wp_remote_retrieve_body($response);
+
+        // Scan the content
+        $detected_scripts = CCM_Script_Scanner::scan_content($content);
+
+        wp_send_json_success(array(
+            'scripts' => $detected_scripts,
+            'count' => count($detected_scripts)
+        ));
+    }
+
+    /**
+     * Render scanner page
+     */
+    public function renderScannerPage() {
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+
+        include CCM_PLUGIN_DIR . 'includes/scanner-page.php';
     }
 }
 
