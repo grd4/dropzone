@@ -3,7 +3,7 @@
  * Plugin Name: Cookie Compliance Manager
  * Plugin URI: https://github.com/yourusername/cookie-compliance-manager
  * Description: A comprehensive WordPress plugin for managing website cookies in compliance with GDPR and CCPA regulations. Provides cookie consent banners, user preference management, and cookie blocking capabilities.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Your Name
  * Author URI: https://yourwebsite.com
  * License: MIT
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Define plugin constants
-define('CCM_VERSION', '1.1.0');
+define('CCM_VERSION', '1.2.0');
 define('CCM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('CCM_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('CCM_PLUGIN_BASENAME', plugin_basename(__FILE__));
@@ -84,19 +84,21 @@ class CookieComplianceManager {
         // Set default options
         $default_options = array(
             'banner_position' => 'bottom',
-            'banner_title' => 'We use cookies',
-            'banner_message' => 'This website uses cookies to ensure you get the best experience on our website.',
+            'banner_title' => 'We Value Your Privacy',
+            'banner_message' => 'We use cookies to understand how you use our site and to improve your experience, including personalizing content and to store your content preferences. Read our privacy policy.',
             'accept_button_text' => 'Accept All',
             'reject_button_text' => 'Reject All',
-            'settings_button_text' => 'Cookie Settings',
+            'settings_button_text' => 'Customize Settings',
             'privacy_policy_url' => get_privacy_policy_url(),
-            'enable_essential' => true,
+            'enable_necessary' => true,
             'enable_analytics' => true,
-            'enable_marketing' => true,
+            'enable_performance' => true,
+            'enable_advertisement' => true,
             'banner_bg_color' => '#ffffff',
-            'banner_text_color' => '#333333',
-            'button_bg_color' => '#4CAF50',
+            'banner_text_color' => '#293953',
+            'button_bg_color' => '#084DAC',
             'button_text_color' => '#ffffff',
+            'button_border_color' => '#084DAC',
             'consent_expiry_days' => 365,
             'show_for_gdpr_only' => false,
             'show_for_ccpa_only' => false,
@@ -185,13 +187,15 @@ class CookieComplianceManager {
         $sanitized['reject_button_text'] = sanitize_text_field($input['reject_button_text']);
         $sanitized['settings_button_text'] = sanitize_text_field($input['settings_button_text']);
         $sanitized['privacy_policy_url'] = esc_url_raw($input['privacy_policy_url']);
-        $sanitized['enable_essential'] = isset($input['enable_essential']) ? true : false;
+        $sanitized['enable_necessary'] = isset($input['enable_necessary']) ? true : false;
         $sanitized['enable_analytics'] = isset($input['enable_analytics']) ? true : false;
-        $sanitized['enable_marketing'] = isset($input['enable_marketing']) ? true : false;
+        $sanitized['enable_performance'] = isset($input['enable_performance']) ? true : false;
+        $sanitized['enable_advertisement'] = isset($input['enable_advertisement']) ? true : false;
         $sanitized['banner_bg_color'] = sanitize_hex_color($input['banner_bg_color']);
         $sanitized['banner_text_color'] = sanitize_hex_color($input['banner_text_color']);
         $sanitized['button_bg_color'] = sanitize_hex_color($input['button_bg_color']);
         $sanitized['button_text_color'] = sanitize_hex_color($input['button_text_color']);
+        $sanitized['button_border_color'] = sanitize_hex_color($input['button_border_color']);
         $sanitized['consent_expiry_days'] = absint($input['consent_expiry_days']);
         $sanitized['show_for_gdpr_only'] = isset($input['show_for_gdpr_only']) ? true : false;
         $sanitized['show_for_ccpa_only'] = isset($input['show_for_ccpa_only']) ? true : false;
@@ -267,50 +271,45 @@ class CookieComplianceManager {
         }
 
         $banner_position = isset($settings['banner_position']) ? $settings['banner_position'] : 'bottom';
-        $banner_title = isset($settings['banner_title']) ? $settings['banner_title'] : 'We use cookies';
-        $banner_message = isset($settings['banner_message']) ? $settings['banner_message'] : 'This website uses cookies to ensure you get the best experience on our website.';
+        $banner_title = isset($settings['banner_title']) ? $settings['banner_title'] : 'We Value Your Privacy';
+        $banner_message = isset($settings['banner_message']) ? $settings['banner_message'] : 'We use cookies to understand how you use our site and to improve your experience, including personalizing content and to store your content preferences. Read our privacy policy.';
         $accept_text = isset($settings['accept_button_text']) ? $settings['accept_button_text'] : 'Accept All';
         $reject_text = isset($settings['reject_button_text']) ? $settings['reject_button_text'] : 'Reject All';
-        $settings_text = isset($settings['settings_button_text']) ? $settings['settings_button_text'] : 'Cookie Settings';
+        $settings_text = isset($settings['settings_button_text']) ? $settings['settings_button_text'] : 'Customize Settings';
         $privacy_url = isset($settings['privacy_policy_url']) ? $settings['privacy_policy_url'] : '';
 
         $enable_analytics = isset($settings['enable_analytics']) ? $settings['enable_analytics'] : true;
-        $enable_marketing = isset($settings['enable_marketing']) ? $settings['enable_marketing'] : true;
+        $enable_performance = isset($settings['enable_performance']) ? $settings['enable_performance'] : true;
+        $enable_advertisement = isset($settings['enable_advertisement']) ? $settings['enable_advertisement'] : true;
 
         // Inline styles from settings
         $bg_color = isset($settings['banner_bg_color']) ? $settings['banner_bg_color'] : '#ffffff';
-        $text_color = isset($settings['banner_text_color']) ? $settings['banner_text_color'] : '#333333';
-        $button_bg = isset($settings['button_bg_color']) ? $settings['button_bg_color'] : '#4CAF50';
+        $text_color = isset($settings['banner_text_color']) ? $settings['banner_text_color'] : '#293953';
+        $button_bg = isset($settings['button_bg_color']) ? $settings['button_bg_color'] : '#084DAC';
         $button_text = isset($settings['button_text_color']) ? $settings['button_text_color'] : '#ffffff';
+        $button_border = isset($settings['button_border_color']) ? $settings['button_border_color'] : '#084DAC';
 
         ?>
         <div id="ccm-cookie-banner" class="ccm-banner ccm-banner-<?php echo esc_attr($banner_position); ?>"
-             style="background-color: <?php echo esc_attr($bg_color); ?>; color: <?php echo esc_attr($text_color); ?>;"
+             style="background-color: <?php echo esc_attr($bg_color); ?>; color: <?php echo esc_attr($text_color); ?>; border-top: 3px solid <?php echo esc_attr($button_border); ?>;"
              data-shown="false">
             <div class="ccm-banner-content">
                 <div class="ccm-banner-text">
                     <h3 class="ccm-banner-title"><?php echo esc_html($banner_title); ?></h3>
                     <p class="ccm-banner-message"><?php echo wp_kses_post($banner_message); ?></p>
-                    <?php if ($privacy_url): ?>
-                        <p class="ccm-privacy-link">
-                            <a href="<?php echo esc_url($privacy_url); ?>" target="_blank">
-                                <?php _e('Privacy Policy', 'cookie-compliance-manager'); ?>
-                            </a>
-                        </p>
-                    <?php endif; ?>
                 </div>
                 <div class="ccm-banner-buttons">
                     <button class="ccm-btn ccm-btn-accept"
-                            style="background-color: <?php echo esc_attr($button_bg); ?>; color: <?php echo esc_attr($button_text); ?>;">
+                            style="background-color: <?php echo esc_attr($button_bg); ?>; color: <?php echo esc_attr($button_text); ?>; border: 2px solid <?php echo esc_attr($button_border); ?>;">
                         <?php echo esc_html($accept_text); ?>
                     </button>
-                    <button class="ccm-btn ccm-btn-reject"
-                            style="background-color: transparent; color: <?php echo esc_attr($text_color); ?>; border: 1px solid <?php echo esc_attr($text_color); ?>;">
-                        <?php echo esc_html($reject_text); ?>
-                    </button>
                     <button class="ccm-btn ccm-btn-settings"
-                            style="background-color: transparent; color: <?php echo esc_attr($text_color); ?>;">
+                            style="background-color: <?php echo esc_attr($bg_color); ?>; color: <?php echo esc_attr($button_bg); ?>; border: 2px solid <?php echo esc_attr($button_border); ?>;">
                         <?php echo esc_html($settings_text); ?>
+                    </button>
+                    <button class="ccm-btn ccm-btn-reject"
+                            style="background-color: transparent; color: <?php echo esc_attr($text_color); ?>; border: 2px solid <?php echo esc_attr($button_border); ?>;">
+                        <?php echo esc_html($reject_text); ?>
                     </button>
                 </div>
             </div>
@@ -318,20 +317,21 @@ class CookieComplianceManager {
 
         <!-- Cookie Settings Modal -->
         <div id="ccm-settings-modal" class="ccm-modal" style="display: none;">
-            <div class="ccm-modal-content" style="background-color: <?php echo esc_attr($bg_color); ?>; color: <?php echo esc_attr($text_color); ?>;">
+            <div class="ccm-modal-content" style="background-color: <?php echo esc_attr($bg_color); ?>; color: <?php echo esc_attr($text_color); ?>; border-top: 3px solid <?php echo esc_attr($button_border); ?>;">
                 <span class="ccm-modal-close">&times;</span>
-                <h2><?php _e('Cookie Settings', 'cookie-compliance-manager'); ?></h2>
-                <p><?php _e('We use cookies to enhance your browsing experience and analyze our traffic. You can choose which cookies to accept.', 'cookie-compliance-manager'); ?></p>
+                <h2><?php _e('How HSA Hospitals uses cookies', 'cookie-compliance-manager'); ?></h2>
+                <p><?php _e('We use cookies on the HSA Hospitals website so that we know when you visit the site and how you interact with it. This information allows us to improve and personalize your user experience. We can customize the content that you see on our site and through our social media presence and provide more relevant advertising. Please note that while you can change your cookie preferences at any time, blocking some types of cookies may impact your experience on the HSA Hospitals website.', 'cookie-compliance-manager'); ?></p>
 
                 <div class="ccm-cookie-category">
                     <div class="ccm-category-header">
                         <label class="ccm-switch">
-                            <input type="checkbox" id="ccm-essential" checked disabled>
+                            <input type="checkbox" id="ccm-necessary" checked disabled>
                             <span class="ccm-slider"></span>
                         </label>
                         <div class="ccm-category-info">
-                            <h4><?php _e('Essential Cookies', 'cookie-compliance-manager'); ?></h4>
-                            <p><?php _e('These cookies are necessary for the website to function and cannot be disabled.', 'cookie-compliance-manager'); ?></p>
+                            <h4><?php _e('Necessary', 'cookie-compliance-manager'); ?></h4>
+                            <h5><?php _e('Essential website cookies', 'cookie-compliance-manager'); ?></h5>
+                            <p><?php _e('These cookies are necessary to provide you with the core services and features available through the HSA Hospitals website. Because these cookies are necessary to deliver the website as intended, you cannot refuse them without impacting how the site functions.', 'cookie-compliance-manager'); ?></p>
                         </div>
                     </div>
                 </div>
@@ -344,36 +344,54 @@ class CookieComplianceManager {
                             <span class="ccm-slider"></span>
                         </label>
                         <div class="ccm-category-info">
-                            <h4><?php _e('Analytics Cookies', 'cookie-compliance-manager'); ?></h4>
-                            <p><?php _e('These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously.', 'cookie-compliance-manager'); ?></p>
+                            <h4><?php _e('Analytics', 'cookie-compliance-manager'); ?></h4>
+                            <h5><?php _e('Social Media Cookies', 'cookie-compliance-manager'); ?></h5>
+                            <p><?php _e('These cookies are set by a range of social media services that we have added to the site to enable you to share our content with your friends and networks. They are capable of tracking your browser across other sites and building up a profile of your interests. This may impact the content and messages you see on other websites you visit. If you do not allow these cookies you may not be able to use or see these sharing tools. If enabled, these cookies may allow social media platforms to track your activity. HSA Hospitals does not control how these platforms use your data. We recommend reviewing their privacy policies.', 'cookie-compliance-manager'); ?></p>
                         </div>
                     </div>
                 </div>
                 <?php endif; ?>
 
-                <?php if ($enable_marketing): ?>
+                <?php if ($enable_performance): ?>
                 <div class="ccm-cookie-category">
                     <div class="ccm-category-header">
                         <label class="ccm-switch">
-                            <input type="checkbox" id="ccm-marketing">
+                            <input type="checkbox" id="ccm-performance">
                             <span class="ccm-slider"></span>
                         </label>
                         <div class="ccm-category-info">
-                            <h4><?php _e('Marketing Cookies', 'cookie-compliance-manager'); ?></h4>
-                            <p><?php _e('These cookies are used to track visitors across websites to display relevant advertisements.', 'cookie-compliance-manager'); ?></p>
+                            <h4><?php _e('Performance', 'cookie-compliance-manager'); ?></h4>
+                            <h5><?php _e('Performance cookies', 'cookie-compliance-manager'); ?></h5>
+                            <p><?php _e('These cookies are used to enhance the functionality of the HSA Hospitals website. They help us customize the site and related applications to enhance your user experience. Although these cookies improve the site\'s performance, they are not essential to its use. However, without these cookies, certain items may be unavailable or may not work as intended.', 'cookie-compliance-manager'); ?></p>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <?php if ($enable_advertisement): ?>
+                <div class="ccm-cookie-category">
+                    <div class="ccm-category-header">
+                        <label class="ccm-switch">
+                            <input type="checkbox" id="ccm-advertisement">
+                            <span class="ccm-slider"></span>
+                        </label>
+                        <div class="ccm-category-info">
+                            <h4><?php _e('Advertisement', 'cookie-compliance-manager'); ?></h4>
+                            <h5><?php _e('Advertising (targeting) cookies', 'cookie-compliance-manager'); ?></h5>
+                            <p><?php _e('These cookies are used to help us deliver advertising that is more relevant to you and your interests. They also help ensure that ads are properly displayed, that the same ad doesn\'t continue to reappear, and that the ads you see are related to your interests. We may use cookies to understand user engagement within our content. HSA Hospitals does not use cookies for personalized advertising based on health or medical information.', 'cookie-compliance-manager'); ?></p>
                         </div>
                     </div>
                 </div>
                 <?php endif; ?>
 
                 <div class="ccm-modal-buttons">
-                    <button class="ccm-btn ccm-btn-save-preferences"
-                            style="background-color: <?php echo esc_attr($button_bg); ?>; color: <?php echo esc_attr($button_text); ?>;">
-                        <?php _e('Save Preferences', 'cookie-compliance-manager'); ?>
-                    </button>
                     <button class="ccm-btn ccm-btn-accept-all"
-                            style="background-color: <?php echo esc_attr($button_bg); ?>; color: <?php echo esc_attr($button_text); ?>;">
+                            style="background-color: <?php echo esc_attr($button_bg); ?>; color: <?php echo esc_attr($button_text); ?>; border: 2px solid <?php echo esc_attr($button_border); ?>;">
                         <?php _e('Accept All', 'cookie-compliance-manager'); ?>
+                    </button>
+                    <button class="ccm-btn ccm-btn-save-preferences"
+                            style="background-color: <?php echo esc_attr($bg_color); ?>; color: <?php echo esc_attr($button_bg); ?>; border: 2px solid <?php echo esc_attr($button_border); ?>;">
+                        <?php _e('Save Preferences', 'cookie-compliance-manager'); ?>
                     </button>
                 </div>
             </div>

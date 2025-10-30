@@ -112,8 +112,8 @@ $settings = get_option('ccm_settings', array());
                     <td>
                         <fieldset>
                             <label>
-                                <input type="checkbox" name="ccm_settings[enable_essential]" value="1" checked disabled>
-                                <?php _e('Essential Cookies (Always Enabled)', 'cookie-compliance-manager'); ?>
+                                <input type="checkbox" name="ccm_settings[enable_necessary]" value="1" checked disabled>
+                                <?php _e('Necessary Cookies (Always Enabled)', 'cookie-compliance-manager'); ?>
                             </label>
                             <br>
                             <label>
@@ -123,9 +123,15 @@ $settings = get_option('ccm_settings', array());
                             </label>
                             <br>
                             <label>
-                                <input type="checkbox" name="ccm_settings[enable_marketing]" value="1"
-                                       <?php checked(isset($settings['enable_marketing']) ? $settings['enable_marketing'] : true); ?>>
-                                <?php _e('Marketing Cookies', 'cookie-compliance-manager'); ?>
+                                <input type="checkbox" name="ccm_settings[enable_performance]" value="1"
+                                       <?php checked(isset($settings['enable_performance']) ? $settings['enable_performance'] : true); ?>>
+                                <?php _e('Performance Cookies', 'cookie-compliance-manager'); ?>
+                            </label>
+                            <br>
+                            <label>
+                                <input type="checkbox" name="ccm_settings[enable_advertisement]" value="1"
+                                       <?php checked(isset($settings['enable_advertisement']) ? $settings['enable_advertisement'] : true); ?>>
+                                <?php _e('Advertisement Cookies', 'cookie-compliance-manager'); ?>
                             </label>
                         </fieldset>
                         <p class="description"><?php _e('Select which cookie categories to offer to users.', 'cookie-compliance-manager'); ?></p>
@@ -172,6 +178,17 @@ $settings = get_option('ccm_settings', array());
                     <td>
                         <input type="text" name="ccm_settings[button_text_color]" id="button_text_color"
                                value="<?php echo esc_attr(isset($settings['button_text_color']) ? $settings['button_text_color'] : '#ffffff'); ?>"
+                               class="ccm-color-picker">
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="row">
+                        <label for="button_border_color"><?php _e('Button Border Color', 'cookie-compliance-manager'); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" name="ccm_settings[button_border_color]" id="button_border_color"
+                               value="<?php echo esc_attr(isset($settings['button_border_color']) ? $settings['button_border_color'] : '#084DAC'); ?>"
                                class="ccm-color-picker">
                     </td>
                 </tr>

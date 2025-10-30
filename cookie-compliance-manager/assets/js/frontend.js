@@ -92,7 +92,8 @@
             var consent = this.getConsent();
             if (consent) {
                 $('#ccm-analytics').prop('checked', consent.analytics || false);
-                $('#ccm-marketing').prop('checked', consent.marketing || false);
+                $('#ccm-performance').prop('checked', consent.performance || false);
+                $('#ccm-advertisement').prop('checked', consent.advertisement || false);
             }
             this.modal.fadeIn(300);
         },
@@ -109,9 +110,10 @@
          */
         acceptAll: function() {
             var consent = {
-                essential: true,
+                necessary: true,
                 analytics: true,
-                marketing: true,
+                performance: true,
+                advertisement: true,
                 timestamp: new Date().toISOString()
             };
 
@@ -123,13 +125,14 @@
         },
 
         /**
-         * Reject all cookies (except essential)
+         * Reject all cookies (except necessary)
          */
         rejectAll: function() {
             var consent = {
-                essential: true,
+                necessary: true,
                 analytics: false,
-                marketing: false,
+                performance: false,
+                advertisement: false,
                 timestamp: new Date().toISOString()
             };
 
@@ -145,9 +148,10 @@
          */
         savePreferences: function() {
             var consent = {
-                essential: true, // Always true
+                necessary: true, // Always true
                 analytics: $('#ccm-analytics').is(':checked'),
-                marketing: $('#ccm-marketing').is(':checked'),
+                performance: $('#ccm-performance').is(':checked'),
+                advertisement: $('#ccm-advertisement').is(':checked'),
                 timestamp: new Date().toISOString()
             };
 
@@ -214,9 +218,10 @@
          */
         applyConsent: function(consent) {
             // Enable scripts based on consent
-            this.enableScripts('essential', true); // Always enabled
+            this.enableScripts('necessary', true); // Always enabled
             this.enableScripts('analytics', consent.analytics || false);
-            this.enableScripts('marketing', consent.marketing || false);
+            this.enableScripts('performance', consent.performance || false);
+            this.enableScripts('advertisement', consent.advertisement || false);
         },
 
         /**
