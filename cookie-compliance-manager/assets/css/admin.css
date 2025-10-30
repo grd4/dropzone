@@ -1,0 +1,58 @@
+/**
+ * Cookie Compliance Manager - Admin Styles
+ */
+
+.ccm-implementation-guide {
+    background: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
+.ccm-implementation-guide h3 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.ccm-implementation-guide h4 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.ccm-implementation-guide pre {
+    background: #272822;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 10px 0;
+}
+
+.ccm-implementation-guide code {
+    font-family: 'Courier New', Monaco, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.ccm-implementation-guide p {
+    line-height: 1.6;
+}
+
+.ccm-export-section {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.ccm-export-section h2 {
+    margin-top: 0;
+}
+
+/* WordPress color picker fix */
+.wp-picker-container {
+    position: relative;
+}
