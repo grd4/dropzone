@@ -141,7 +141,8 @@ if (isset($_POST['ccm_add_pattern']) && check_admin_referer('ccm_add_pattern_act
                         <td>
                             <select name="pattern_category" id="pattern_category" required>
                                 <option value="analytics"><?php _e('Analytics', 'cookie-compliance-manager'); ?></option>
-                                <option value="marketing"><?php _e('Marketing', 'cookie-compliance-manager'); ?></option>
+                                <option value="performance"><?php _e('Performance', 'cookie-compliance-manager'); ?></option>
+                                <option value="advertisement"><?php _e('Advertisement', 'cookie-compliance-manager'); ?></option>
                             </select>
                         </td>
                     </tr>
@@ -254,7 +255,11 @@ if (isset($_POST['ccm_add_pattern']) && check_admin_referer('ccm_add_pattern_act
     background-color: #0073aa;
 }
 
-.ccm-category-marketing {
+.ccm-category-performance {
+    background-color: #46b450;
+}
+
+.ccm-category-advertisement {
     background-color: #d63638;
 }
 
@@ -402,7 +407,12 @@ jQuery(document).ready(function($) {
                         html = '<p><strong>' + scripts.length + ' <?php _e('script(s) detected', 'cookie-compliance-manager'); ?></strong></p>';
 
                         scripts.forEach(function(script) {
-                            var categoryColor = script.category === 'analytics' ? '#0073aa' : '#d63638';
+                            var categoryColor = '#0073aa'; // analytics (blue)
+                            if (script.category === 'performance') {
+                                categoryColor = '#46b450'; // performance (green)
+                            } else if (script.category === 'advertisement') {
+                                categoryColor = '#d63638'; // advertisement (red)
+                            }
 
                             html += '<div class="ccm-detected-script">';
                             html += '<div class="ccm-detected-script-header">';

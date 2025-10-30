@@ -14,8 +14,20 @@ class CCM_Script_Scanner {
      * Known script patterns and their categories
      */
     private static $script_patterns = array(
-        // Analytics
+        // Analytics (Social Media)
         'analytics' => array(
+            'facebook.net' => 'Facebook Pixel',
+            'fbevents.js' => 'Facebook Pixel',
+            'connect.facebook.net' => 'Facebook Pixel',
+            'twitter.com/widgets.js' => 'Twitter Widget',
+            'platform.twitter.com' => 'Twitter Widget',
+            'linkedin.com/embed' => 'LinkedIn Widget',
+            'snap.licdn.com' => 'LinkedIn Insight Tag',
+            'addthis.com' => 'AddThis',
+            'sharethis.com' => 'ShareThis',
+        ),
+        // Performance
+        'performance' => array(
             'google-analytics.com' => 'Google Analytics',
             'googletagmanager.com' => 'Google Tag Manager',
             'ga.js' => 'Google Analytics (Legacy)',
@@ -35,20 +47,13 @@ class CCM_Script_Scanner {
             'fullstory.com' => 'FullStory',
             'logrocket.com' => 'LogRocket',
         ),
-        // Marketing
-        'marketing' => array(
-            'facebook.net' => 'Facebook Pixel',
-            'fbevents.js' => 'Facebook Pixel',
-            'connect.facebook.net' => 'Facebook Pixel',
+        // Advertisement (Targeting)
+        'advertisement' => array(
             'doubleclick.net' => 'Google DoubleClick',
             'googlesyndication.com' => 'Google AdSense',
             'adsbygoogle.js' => 'Google AdSense',
             'googleadservices.com' => 'Google Ads',
             'google.com/ads' => 'Google Ads',
-            'twitter.com/widgets.js' => 'Twitter Widget',
-            'platform.twitter.com' => 'Twitter Widget',
-            'linkedin.com/embed' => 'LinkedIn Widget',
-            'snap.licdn.com' => 'LinkedIn Insight Tag',
             'ads-twitter.com' => 'Twitter Ads',
             'analytics.twitter.com' => 'Twitter Analytics',
             'bing.com/bat.js' => 'Bing Ads',
@@ -60,8 +65,6 @@ class CCM_Script_Scanner {
             'outbrain.com' => 'Outbrain',
             'taboola.com' => 'Taboola',
             'criteo.com' => 'Criteo',
-            'addthis.com' => 'AddThis',
-            'sharethis.com' => 'ShareThis',
         ),
     );
 
@@ -70,6 +73,10 @@ class CCM_Script_Scanner {
      */
     private static $function_patterns = array(
         'analytics' => array(
+            'fbq(' => 'Facebook Pixel',
+            'twq(' => 'Twitter Pixel',
+        ),
+        'performance' => array(
             'ga(' => 'Google Analytics',
             'gtag(' => 'Google Analytics 4',
             '_gaq.push' => 'Google Analytics (Legacy)',
@@ -79,9 +86,7 @@ class CCM_Script_Scanner {
             'amplitude.track' => 'Amplitude',
             'heap.track' => 'Heap Analytics',
         ),
-        'marketing' => array(
-            'fbq(' => 'Facebook Pixel',
-            'twq(' => 'Twitter Pixel',
+        'advertisement' => array(
             'pintrk(' => 'Pinterest Tag',
             'rdt(' => 'Reddit Pixel',
             'ttq.track' => 'TikTok Pixel',
@@ -282,7 +287,7 @@ class CCM_Script_Scanner {
 
         // Process iframes (e.g., YouTube, Vimeo)
         $iframe_patterns = array(
-            'marketing' => array('youtube.com', 'youtu.be', 'vimeo.com', 'dailymotion.com'),
+            'advertisement' => array('youtube.com', 'youtu.be', 'vimeo.com', 'dailymotion.com'),
         );
 
         $content = preg_replace_callback(
