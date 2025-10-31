@@ -12,6 +12,7 @@ class CCM_Script_Scanner {
 
     /**
      * Known script patterns and their categories
+     * Note: WordPress plugin patterns use script IDs and class names
      */
     private static $script_patterns = array(
         // Analytics (Social Media)
@@ -25,6 +26,8 @@ class CCM_Script_Scanner {
             'snap.licdn.com' => 'LinkedIn Insight Tag',
             'addthis.com' => 'AddThis',
             'sharethis.com' => 'ShareThis',
+            // WordPress Plugins - Social
+            'jetpack.com/mu-plugins/social' => 'Jetpack Social',
         ),
         // Performance
         'performance' => array(
@@ -46,6 +49,23 @@ class CCM_Script_Scanner {
             'heap.io' => 'Heap Analytics',
             'fullstory.com' => 'FullStory',
             'logrocket.com' => 'LogRocket',
+            // WordPress Plugins - Analytics/Performance
+            'koko-analytics' => 'Koko Analytics',
+            'koko_analytics' => 'Koko Analytics',
+            'monsterinsights' => 'MonsterInsights',
+            'exactmetrics' => 'ExactMetrics',
+            'jetpack.com/mu-plugins/stats' => 'Jetpack Stats',
+            'stats.wp.com' => 'WordPress.com Stats',
+            'statcounter.com' => 'StatCounter',
+            'clicky.com/js' => 'Clicky',
+            'analytics/track' => 'WooCommerce Analytics',
+            'woocommerce-analytics' => 'WooCommerce Analytics',
+            'wp-statistics' => 'WP Statistics',
+            'independent-analytics' => 'Independent Analytics',
+            'plausible.io' => 'Plausible Analytics',
+            'simpleanalytics.com' => 'Simple Analytics',
+            'umami.js' => 'Umami Analytics',
+            'fathom' => 'Fathom Analytics',
         ),
         // Advertisement (Targeting)
         'advertisement' => array(
@@ -65,6 +85,10 @@ class CCM_Script_Scanner {
             'outbrain.com' => 'Outbrain',
             'taboola.com' => 'Taboola',
             'criteo.com' => 'Criteo',
+            // WordPress Plugins - Advertising
+            'advanced-ads' => 'Advanced Ads',
+            'ad-inserter' => 'Ad Inserter',
+            'woocommerce-google-analytics-integration' => 'WooCommerce Google Ads',
         ),
     );
 
@@ -85,6 +109,17 @@ class CCM_Script_Scanner {
             'mixpanel.track' => 'Mixpanel',
             'amplitude.track' => 'Amplitude',
             'heap.track' => 'Heap Analytics',
+            // WordPress Plugin Functions
+            'koko_analytics' => 'Koko Analytics',
+            '__gaTracker' => 'MonsterInsights/ExactMetrics',
+            'monsterinsights' => 'MonsterInsights',
+            'exactmetrics' => 'ExactMetrics',
+            '_stq.push' => 'WordPress.com Stats',
+            'clicky.log' => 'Clicky',
+            'plausible(' => 'Plausible Analytics',
+            'sa_event' => 'Simple Analytics',
+            'umami.track' => 'Umami Analytics',
+            'fathom.trackPageview' => 'Fathom Analytics',
         ),
         'advertisement' => array(
             'pintrk(' => 'Pinterest Tag',
