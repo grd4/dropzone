@@ -25,6 +25,7 @@ define('CCM_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 // Load dependencies
 require_once CCM_PLUGIN_DIR . 'includes/class-script-scanner.php';
+require_once CCM_PLUGIN_DIR . 'includes/diagnostics-page.php';
 
 class CookieComplianceManager {
 
