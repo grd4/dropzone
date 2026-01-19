@@ -1,0 +1,9 @@
+ApplicationName,VendorName,HospitalSites,RecordedIntegrationPriority
+Epic MyChart,Epic Systems,Memorial Hospital; St. Mary's,Go-Live Critical
+Laboratory Information System,Cerner,All Sites,Post-Go-Live (with workarounds)
+Radiology PACS,GE Healthcare,Memorial Hospital,At cutover (hard requirement)
+Pharmacy Management,McKesson,St. Mary's; Regional Center,Go-Live Critical
+Patient Portal,Internal Development,All Sites,Post Go-live (limited/no workarounds)
+Telehealth Platform,Zoom Healthcare,Memorial Hospital,Unknown - Under Review
+Medical Device Integration,Philips,All Sites,Go-Live Critical
+Revenue Cycle Management,Epic Systems,Corporate Office,Post-Go-Live (with workarounds)

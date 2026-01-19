@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSA-048 RVF App Owner Interview</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .upload-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .upload-box {
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-box:hover {
+            border-color: #764ba2;
+            background: #f8f9fa;
+        }
+
+        .upload-box.dragging {
+            border-color: #764ba2;
+            background: #f0f0ff;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .app-picker {
+            padding: 30px;
+            display: none;
+        }
+
+        .app-picker.active {
+            display: block;
+        }
+
+        .picker-label {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .app-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            background: white;
+        }
+
+        .app-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-section {
+            padding: 30px;
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            transition: all 0.3s;
+        }
+
+        .question.hidden {
+            display: none;
+        }
+
+        .question-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .prefilled {
+            background-color: #fff3cd !important;
+            border-color: #ffc107 !important;
+        }
+
+        .prefill-badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #000;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 5px;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .checkbox-group,
+        .radio-group {
+            margin-top: 8px;
+        }
+
+        .checkbox-item,
+        .radio-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .checkbox-item:hover,
+        .radio-item:hover {
+            background: #f0f0f0;
+        }
+
+        .checkbox-item input,
+        .radio-item input {
+            width: auto;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label,
+        .radio-item label {
+            cursor: pointer;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .summary-section {
+            padding: 30px;
+            display: none;
+        }
+
+        .summary-section.active {
+            display: block;
+        }
+
+        .summary-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .summary-value {
+            color: #212529;
+            font-size: 14px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .upload-section,
+            .app-picker,
+            .navigation,
+            .btn {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>HSA-048 RVF App Owner Interview (v1)</h1>
+            <p>RVF migration interview. IP/VLAN may stay the same, but DNS/DCs/NTP/trusts change. Use this form to capture dependencies and cutover readiness.</p>
+        </div>
+
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-box" id="uploadBox">
+                <div class="upload-icon">📊</div>
+                <h3>Upload Application Spreadsheet</h3>
+                <p style="margin: 10px 0; color: #6c757d;">Drag & drop or click to select CSV/Excel file</p>
+                <button class="btn" onclick="document.getElementById('fileInput').click()">Choose File</button>
+                <input type="file" id="fileInput" accept=".csv,.xlsx,.xls">
+            </div>
+        </div>
+
+        <div class="app-picker" id="appPicker">
+            <label class="picker-label">Select Application to Interview:</label>
+            <select class="app-select" id="appSelect">
+                <option value="">-- Choose an application --</option>
+            </select>
+            <button class="btn" onclick="loadApplication()">Load & Start Interview</button>
+            <button class="btn btn-secondary" onclick="resetUpload()" style="margin-left: 10px;">Upload Different File</button>
+        </div>
+
+        <div class="form-section" id="formSection">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div id="formContent"></div>
+        </div>
+
+        <div class="summary-section" id="summarySection">
+            <h2 style="margin-bottom: 20px;">Interview Summary</h2>
+            <div id="summaryContent"></div>
+        </div>
+
+        <div class="navigation" id="navigation" style="display: none;">
+            <button class="btn btn-secondary" onclick="validateAndExport()">💾 Export Results</button>
+            <button class="btn" onclick="startNewInterview()">🔄 New Interview</button>
+        </div>
+    </div>
+
+    <script>
+        // Form definition embedded
+        const formDefinition = {
+  "form": {
+    "name": "HSA-048 RVF App Owner Interview (v1)",
+    "description": "RVF migration interview. IP/VLAN may stay the same, but DNS/DCs/NTP/trusts change. Use this form to capture dependencies and cutover readiness.",
+    "version": "1.0",
+    "prefill": {
+      "supported": true,
+      "parameters": [
+        "ApplicationName",
+        "VendorName",
+        "HospitalSites",
+        "RecordedIntegrationPriority"
+      ],
+      "notes": "MS Forms supports URL-based prefill for some question types. Do not rely on prefilled values as truth; capture confirmation below."
+    }
+  },
+  "sections": [
+    {
+      "id": "meta",
+      "title": "Interview Metadata",
+      "questions": [
+        {
+          "id": "ApplicationName",
+          "title": "Application Name",
+          "type": "text",
+          "required": true,
+          "prefill_param": "ApplicationName"
+        },
+        {
+          "id": "VendorName",
+          "title": "Vendor Name",
+          "type": "text",
+          "required": false,
+          "prefill_param": "VendorName"
+        },
+        {
+          "id": "HospitalSites",
+          "title": "Hospital(s) / Site(s)",
+          "type": "text",
+          "required": false,
+          "prefill_param": "HospitalSites"
+        },
+        {
+          "id": "InterviewerName",
+          "title": "Interviewer Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "InterviewDate",
+          "title": "Interview Date",
+          "type": "date",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "U_priority",
+      "title": "Integration Priority & Timing (Portfolio Baseline + Confirmation)",
+      "questions": [
+        {
+          "id": "RecordedIntegrationPriority",
+          "title": "Recorded integration priority (from application portfolio – please confirm)",
+          "type": "choice_single",
+          "required": true,
+          "choices": [
+            "Go-Live Critical",
+            "Post-Go-Live (with workarounds)",
+            "Post Go-live (limited/no workarounds)",
+            "Not Integrated",
+            "Unknown - Under Review",
+            "(Blank)"
+          ],
+          "prefill_param": "RecordedIntegrationPriority"
+        },
+        {
+          "id": "ConfirmedOperationalTiming",
+          "title": "Based on your knowledge, when must this application/integration actually be operational?",
+          "type": "choice_single",
+          "required": true,
+          "choices": [
+            "Before cutover",
+            "At cutover (hard requirement)",
+            "Within 24 hours post-go-live",
+            "Post-go-live (days/weeks acceptable)",
+            "Not sure"
+          ]
+        },
+        {
+          "id": "WorkaroundAvailability",
+          "title": "If this application is unavailable at go-live, are acceptable workarounds available?",
+          "type": "choice_single",
+          "required": true,
+          "choices": [
+            "Yes – documented and routinely used",
+            "Yes – informal / manual workaround",
+            "No – workflow is blocked",
+            "Not sure"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A_servers",
+      "title": "A. Server Confirmation",
+      "questions": [
+        {
+          "id": "ServerListComplete",
+          "title": "Is the server list from inventory complete?",
+          "type": "choice_single",
+          "required": true,
+          "choices": [
+            "Yes, this is all of them",
+            "No, there are additional servers",
+            "I don't know"
+          ]
+        },
+        {
+          "id": "AdditionalServers",
+          "title": "Additional servers not listed (server name / IP / purpose)",
+          "type": "long_text",
+          "required": false,
+          "help_text": "Paste a list or describe; detailed table can be captured later in the runbook."
+        },
+        {
+          "id": "RuntimeBinding",
+          "title": "Does your application bind to any of the following at runtime?",
+          "type": "choice_multi",
+          "required": true,
+          "choices": [
+            "Specific IP address",
+            "Hostname / FQDN",
+            "MAC address",
+            "Machine SID / GUID",
+            "Windows Computer Name",
+            "None / Not sure"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "B_access",
+      "title": "B. User Interface / Client Access",
+      "questions": [
+        {
+          "id": "AccessMethod",
+          "title": "How do users access your application?",
+          "type": "choice_multi",
+          "required": true,
+          "choices": [
+            "Web browser",
+            "Installed desktop application (fat client)",
+            "Citrix / Remote Desktop Services",
+            "Mobile app",
+            "API only (no direct user interface)",
+            "Other"
+          ]
+        },
+        {
+          "id": "WebUrls",
+          "title": "If web-based: URL(s) users access",
+          "type": "long_text",
+          "required": false
+        },
+        {
+          "id": "WebExposure",
+          "title": "If web-based: is it internal only or external facing?",
+          "type": "choice_single",
+          "required": false,
+          "choices": ["Internal", "External", "Both"]
+        },
+        {
+          "id": "FatClientCount",
+          "title": "If fat client: approximate workstation count",
+          "type": "number",
+          "required": false
+        },
+        {
+          "id": "FatClientInstallMethod",
+          "title": "If fat client: installed via",
+          "type": "choice_multi",
+          "required": false,
+          "choices": ["SCCM/software deployment", "Manual", "GPO", "Don't know"]
+        },
+        {
+          "id": "FatClientServerConfig",
+          "title": "If fat client: where is the server connection configured?",
+          "type": "choice_multi",
+          "required": false,
+          "choices": [
+            "Config file on workstation (provide path)",
+            "Registry key (provide key)",
+            "Hardcoded in application",
+            "User enters server at login",
+            "Don't know"
+          ]
+        },
+        {
+          "id": "CitrixPublishedName",
+          "title": "If Citrix/RDS: published app or desktop name",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "C_auth",
+      "title": "C. Authentication & Service Accounts",
+      "questions": [
+        {
+          "id": "ServiceAccountsList",
+          "title": "List service accounts used (account / domain / used for / password managed by)",
+          "type": "long_text",
+          "required": false
+        },
+        {
+          "id": "DbAuthMethod",
+          "title": "How does your application authenticate to databases?",
+          "type": "choice_single",
+          "required": true,
+          "choices": [
+            "Windows Authentication (domain service account)",
+            "SQL Authentication (SQL username/password)",
+            "Mixed / Both",
+            "Not applicable (no database)",
+            "Don't know"
+          ]
+        },
+        {
+          "id": "QueriesAD",
+          "title": "Does your application query Active Directory (LDAP) directly?",
+          "type": "choice_multi",
+          "required": true,
+          "choices": [
+            "Yes - for user lookups",
+            "Yes - for group membership",
+            "Yes - other purpose",
+            "No",
+            "Don't know"
+          ]
+        },
+        {
+          "id": "LdapDiscovery",
+          "title": "If yes: are LDAP servers hardcoded or discovered via DNS?",
+          "type": "choice_single",
+          "required": false,
+          "choices": ["Hardcoded to specific server(s)", "Discovered via DNS SRV records", "Don't know"]
+        },
+        {
+          "id": "KerberosSPN",
+          "title": "Does the application rely on Kerberos authentication or registered SPNs?",
+          "type": "choice_single",
+          "required": true,
+          "choices": ["Yes", "No", "Don't know"]
+        },
+        {
+          "id": "SPNsList",
+          "title": "If yes: list SPN(s) (e.g., HTTP/web.domain.com)",
+          "type": "long_text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "D_deps",
+      "title": "D. Dependencies",
+      "questions": [
+        {
+          "id": "UpstreamDeps",
+          "title": "What other applications must be running BEFORE yours can start?",
+          "type": "long_text",
+          "required": false
+        },
+        {
+          "id": "DownstreamDeps",
+          "title": "What applications depend on YOUR app being up?",
+          "type": "long_text",
+          "required": false
+        },
+        {
+          "id": "ExternalVendors",
+          "title": "Does your application connect to external vendors?",
+          "type": "choice_multi",
+          "required": true,
+          "choices": [
+            "Yes - for licensing",
+            "Yes - for cloud services",
+            "Yes - for support/updates",
+            "No external connections",
+            "Don't know"
+          ]
+        },
+        {
+          "id": "AllowListing",
+          "title": "Are any upstream or downstream systems explicitly allow-listing this app by source/destination IP, hostname, or firewall object?",
+          "type": "choice_multi",
+          "required": true,
+          "choices": [
+            "Source IP",
+            "Destination IP",
+            "Hostname",
+            "Network zone / firewall object",
+            "Not sure",
+            "No allow-listing"
+          ]
+        },
+        {
+          "id": "AllowListDetails",
+          "title": "If allow-listing exists: list the system/vendor and what is allow-listed",
+          "type": "long_text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "E_hl7",
+      "title": "E. Interfaces (Rhapsody / HL7)",
+      "questions": [
+        {
+          "id": "UsesRhapsody",
+          "title": "Does your application send or receive HL7 messages via Rhapsody?",
+          "type": "choice_single",
+          "required": true,
+          "choices": [
+            "Yes - Receives (inbound)",
+            "Yes - Sends (outbound)",
+            "Yes - Both directions",
+            "No Rhapsody integration",
+            "Don't know"
+          ]
+        },
+        {
+          "id": "RhapsodyOutageBehavior",
+          "title": "If Rhapsody is unavailable for 30 minutes during cutover, what happens?",
+          "type": "choice_single",
+          "required": false,
+          "choices": [
+            "Messages queue and process later (no data loss)",
+            "Messages fail and must be resent manually",
+            "Application errors/crashes",
+            "Workaround exists",
+            "Don't know"
+          ]
+        },
+        {
+          "id": "InterfaceRoutes",
+          "title": "List interface routes used (route name / direction / what data)",
+          "type": "long_text",
+          "required": false
+        },
+        {
+          "id": "BacklogReplay",
+          "title": "During backlog replay after an outage, does the app handle high-volume bursts?",
+          "type": "choice_single",
+          "required": false,
+          "choices": [
+            "Handle high-volume message bursts safely",
+            "Degrade but recover",
+            "Fail or require throttling",
+            "Unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q_cutover",
+      "title": "Cutover Readiness (Startup / Validation / Rollback)",
+      "questions": [
+        {
+          "id": "StartupSequence",
+          "title": "What is the correct startup sequence? (services/steps in order)",
+          "type": "long_text",
+          "required": false
+        },
+        {
+          "id": "InitTime",
+          "title": "How long does the application take to fully initialize?",
+          "type": "choice_single",
+          "required": true,
+          "choices": ["Less than 5 minutes", "5-15 minutes", "15-30 minutes", "More than 30 minutes", "Don't know"]
+        },
+        {
+          "id": "ValidationTest",
+          "title": "What is your validation test to confirm the app is working?",
+          "type": "long_text",
+          "required": true
+        },
+        {
+          "id": "ValidatorContacts",
+          "title": "Who will validate during cutover? (name / role / phone / available 24/7?)",
+          "type": "long_text",
+          "required": true
+        },
+        {
+          "id": "RollbackPlan",
+          "title": "If the application fails to start after migration, what is the rollback plan?",
+          "type": "long_text",
+          "required": true
+        },
+        {
+          "id": "DowntimeTolerance",
+          "title": "How long can the application be down before patient care is impacted?",
+          "type": "choice_single",
+          "required": true,
+          "choices": [
+            "Cannot be down at all (immediate impact)",
+            "Less than 1 hour",
+            "1-4 hours",
+            "4-8 hours",
+            "More than 8 hours"
+          ]
+        }
+      ]
+    }
+  ],
+  "branching_rules": [
+    {
+      "if": "AccessMethod contains 'Web browser'",
+      "then_show": ["WebUrls", "WebExposure"]
+    },
+    {
+      "if": "AccessMethod contains 'Installed desktop application (fat client)'",
+      "then_show": ["FatClientCount", "FatClientInstallMethod", "FatClientServerConfig"]
+    },
+    {
+      "if": "AccessMethod contains 'Citrix / Remote Desktop Services'",
+      "then_show": ["CitrixPublishedName"]
+    },
+    {
+      "if": "KerberosSPN == 'Yes'",
+      "then_show": ["SPNsList"]
+    },
+    {
+      "if": "AllowListing contains any of ['Source IP','Destination IP','Hostname','Network zone / firewall object']",
+      "then_show": ["AllowListDetails"]
+    },
+    {
+      "if": "UsesRhapsody startswith 'Yes'",
+      "then_show": ["RhapsodyOutageBehavior", "InterfaceRoutes", "BacklogReplay"]
+    }
+  ],
+  "analytics_contract": {
+    "key_fields": [
+      "ApplicationName",
+      "RecordedIntegrationPriority",
+      "ConfirmedOperationalTiming",
+      "WorkaroundAvailability",
+      "RuntimeBinding",
+      "KerberosSPN",
+      "AllowListing",
+      "UsesRhapsody",
+      "InitTime",
+      "DowntimeTolerance"
+    ],
+    "notes": "Keep question titles and choices stable to avoid breaking reports/Power Automate flows."
+  }
+};
+
+        let spreadsheetData = [];
+        let currentAppData = {};
+        let formData = {};
+
+        // File upload handling
+        const uploadBox = document.getElementById('uploadBox');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadBox.addEventListener('click', () => fileInput.click());
+
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.classList.add('dragging');
+        });
+
+        uploadBox.addEventListener('dragleave', () => {
+            uploadBox.classList.remove('dragging');
+        });
+
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.classList.remove('dragging');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFile(file);
+        });
+
+        function handleFile(file) {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+                    if (jsonData.length === 0) {
+                        alert('No data found in spreadsheet');
+                        return;
+                    }
+
+                    spreadsheetData = jsonData;
+                    populateAppPicker();
+                } catch (error) {
+                    alert('Error reading file: ' + error.message);
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function populateAppPicker() {
+            const appSelect = document.getElementById('appSelect');
+            appSelect.innerHTML = '<option value="">-- Choose an application --</option>';
+
+            spreadsheetData.forEach((row, index) => {
+                const appName = row.ApplicationName || row['Application Name'] || row.Application || `Row ${index + 1}`;
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = appName;
+                appSelect.appendChild(option);
+            });
+
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('appPicker').classList.add('active');
+        }
+
+        function loadApplication() {
+            const appSelect = document.getElementById('appSelect');
+            const selectedIndex = appSelect.value;
+
+            if (selectedIndex === '') {
+                alert('Please select an application');
+                return;
+            }
+
+            currentAppData = spreadsheetData[selectedIndex];
+            formData = {};
+
+            // Set today's date
+            formData.InterviewDate = new Date().toISOString().split('T')[0];
+
+            renderForm();
+
+            document.getElementById('appPicker').classList.remove('active');
+            document.getElementById('formSection').classList.add('active');
+            document.getElementById('navigation').style.display = 'flex';
+        }
+
+        function renderForm() {
+            const formContent = document.getElementById('formContent');
+            formContent.innerHTML = '';
+
+            formDefinition.sections.forEach(section => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'section';
+                sectionDiv.innerHTML = `<h2 class="section-title">${section.title}</h2>`;
+
+                section.questions.forEach(question => {
+                    const questionDiv = createQuestionElement(question);
+                    sectionDiv.appendChild(questionDiv);
+                });
+
+                formContent.appendChild(sectionDiv);
+            });
+
+            applyBranchingLogic();
+            updateProgress();
+        }
+
+        function createQuestionElement(question) {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            questionDiv.id = `q_${question.id}`;
+
+            const isPrefilled = question.prefill_param && currentAppData[question.prefill_param];
+            const prefillValue = isPrefilled ? currentAppData[question.prefill_param] : '';
+
+            let labelHTML = `<label class="question-label">${question.title}`;
+            if (question.required) labelHTML += ' <span class="required">*</span>';
+            if (isPrefilled) labelHTML += ' <span class="prefill-badge">PREFILLED</span>';
+            labelHTML += '</label>';
+
+            questionDiv.innerHTML = labelHTML;
+
+            let inputHTML = '';
+
+            switch (question.type) {
+                case 'text':
+                    inputHTML = `<input type="text" id="${question.id}" name="${question.id}"
+                        value="${prefillValue}" ${isPrefilled ? 'class="prefilled"' : ''}
+                        ${question.required ? 'required' : ''}>`;
+                    break;
+
+                case 'number':
+                    inputHTML = `<input type="number" id="${question.id}" name="${question.id}"
+                        value="${prefillValue}" ${isPrefilled ? 'class="prefilled"' : ''}
+                        ${question.required ? 'required' : ''}>`;
+                    break;
+
+                case 'date':
+                    const dateValue = prefillValue || formData.InterviewDate || '';
+                    inputHTML = `<input type="date" id="${question.id}" name="${question.id}"
+                        value="${dateValue}" ${isPrefilled ? 'class="prefilled"' : ''}
+                        ${question.required ? 'required' : ''}>`;
+                    break;
+
+                case 'long_text':
+                    inputHTML = `<textarea id="${question.id}" name="${question.id}"
+                        ${isPrefilled ? 'class="prefilled"' : ''}
+                        ${question.required ? 'required' : ''}>${prefillValue}</textarea>`;
+                    break;
+
+                case 'choice_single':
+                    inputHTML = '<div class="radio-group">';
+                    question.choices.forEach(choice => {
+                        const checked = prefillValue === choice ? 'checked' : '';
+                        const radioClass = prefillValue === choice ? 'prefilled' : '';
+                        inputHTML += `
+                            <div class="radio-item ${radioClass}">
+                                <input type="radio" id="${question.id}_${choice}"
+                                    name="${question.id}" value="${choice}" ${checked}
+                                    ${question.required ? 'required' : ''}>
+                                <label for="${question.id}_${choice}">${choice}</label>
+                            </div>`;
+                    });
+                    inputHTML += '</div>';
+                    break;
+
+                case 'choice_multi':
+                    inputHTML = '<div class="checkbox-group">';
+                    question.choices.forEach(choice => {
+                        inputHTML += `
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="${question.id}_${choice}"
+                                    name="${question.id}" value="${choice}">
+                                <label for="${question.id}_${choice}">${choice}</label>
+                            </div>`;
+                    });
+                    inputHTML += '</div>';
+                    break;
+            }
+
+            questionDiv.innerHTML += inputHTML;
+
+            if (question.help_text) {
+                questionDiv.innerHTML += `<div class="help-text">${question.help_text}</div>`;
+            }
+
+            // Add event listeners
+            const inputs = questionDiv.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                input.addEventListener('change', () => {
+                    collectFormData();
+                    applyBranchingLogic();
+                    updateProgress();
+                });
+            });
+
+            return questionDiv;
+        }
+
+        function collectFormData() {
+            formData = {};
+
+            formDefinition.sections.forEach(section => {
+                section.questions.forEach(question => {
+                    if (question.type === 'choice_multi') {
+                        const checkboxes = document.querySelectorAll(`input[name="${question.id}"]:checked`);
+                        formData[question.id] = Array.from(checkboxes).map(cb => cb.value);
+                    } else if (question.type === 'choice_single') {
+                        const radio = document.querySelector(`input[name="${question.id}"]:checked`);
+                        formData[question.id] = radio ? radio.value : '';
+                    } else {
+                        const input = document.getElementById(question.id);
+                        formData[question.id] = input ? input.value : '';
+                    }
+                });
+            });
+        }
+
+        function applyBranchingLogic() {
+            // First hide all conditional questions
+            const conditionalQuestions = new Set();
+            formDefinition.branching_rules.forEach(rule => {
+                rule.then_show.forEach(qid => conditionalQuestions.add(qid));
+            });
+
+            conditionalQuestions.forEach(qid => {
+                const questionEl = document.getElementById(`q_${qid}`);
+                if (questionEl) questionEl.classList.add('hidden');
+            });
+
+            // Apply rules
+            formDefinition.branching_rules.forEach(rule => {
+                if (evaluateCondition(rule.if)) {
+                    rule.then_show.forEach(qid => {
+                        const questionEl = document.getElementById(`q_${qid}`);
+                        if (questionEl) questionEl.classList.remove('hidden');
+                    });
+                }
+            });
+        }
+
+        function evaluateCondition(condition) {
+            // Parse condition like "AccessMethod contains 'Web browser'"
+            const containsMatch = condition.match(/(\w+) contains '([^']+)'/);
+            if (containsMatch) {
+                const [, fieldId, value] = containsMatch;
+                const fieldValue = formData[fieldId];
+                if (Array.isArray(fieldValue)) {
+                    return fieldValue.includes(value);
+                }
+                return fieldValue && fieldValue.includes(value);
+            }
+
+            // Parse condition like "KerberosSPN == 'Yes'"
+            const equalsMatch = condition.match(/(\w+) == '([^']+)'/);
+            if (equalsMatch) {
+                const [, fieldId, value] = equalsMatch;
+                return formData[fieldId] === value;
+            }
+
+            // Parse condition like "UsesRhapsody startswith 'Yes'"
+            const startsWithMatch = condition.match(/(\w+) startswith '([^']+)'/);
+            if (startsWithMatch) {
+                const [, fieldId, value] = startsWithMatch;
+                return formData[fieldId] && formData[fieldId].startsWith(value);
+            }
+
+            // Parse "contains any of" condition
+            const containsAnyMatch = condition.match(/(\w+) contains any of \[([^\]]+)\]/);
+            if (containsAnyMatch) {
+                const [, fieldId, valuesStr] = containsAnyMatch;
+                const values = valuesStr.split(',').map(v => v.trim().replace(/'/g, ''));
+                const fieldValue = formData[fieldId];
+                if (Array.isArray(fieldValue)) {
+                    return values.some(v => fieldValue.includes(v));
+                }
+                return false;
+            }
+
+            return false;
+        }
+
+        function updateProgress() {
+            let totalRequired = 0;
+            let completedRequired = 0;
+
+            formDefinition.sections.forEach(section => {
+                section.questions.forEach(question => {
+                    const questionEl = document.getElementById(`q_${question.id}`);
+                    if (question.required && questionEl && !questionEl.classList.contains('hidden')) {
+                        totalRequired++;
+                        const value = formData[question.id];
+                        if (value && (Array.isArray(value) ? value.length > 0 : value.trim() !== '')) {
+                            completedRequired++;
+                        }
+                    }
+                });
+            });
+
+            const progress = totalRequired > 0 ? (completedRequired / totalRequired) * 100 : 0;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function validateAndExport() {
+            collectFormData();
+
+            let missingFields = [];
+
+            formDefinition.sections.forEach(section => {
+                section.questions.forEach(question => {
+                    const questionEl = document.getElementById(`q_${question.id}`);
+                    if (question.required && questionEl && !questionEl.classList.contains('hidden')) {
+                        const value = formData[question.id];
+                        if (!value || (Array.isArray(value) ? value.length === 0 : value.trim() === '')) {
+                            missingFields.push(question.title);
+                        }
+                    }
+                });
+            });
+
+            if (missingFields.length > 0) {
+                alert('Please complete the following required fields:\n\n' + missingFields.join('\n'));
+                return;
+            }
+
+            exportResults();
+        }
+
+        function exportResults() {
+            const results = {
+                form: formDefinition.form.name,
+                version: formDefinition.form.version,
+                completedDate: new Date().toISOString(),
+                prefillSource: currentAppData,
+                responses: formData
+            };
+
+            // Export as JSON
+            const jsonStr = JSON.stringify(results, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `interview_${formData.ApplicationName || 'unknown'}_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+
+            // Show summary
+            showSummary();
+        }
+
+        function showSummary() {
+            const summaryContent = document.getElementById('summaryContent');
+            summaryContent.innerHTML = '<div class="alert alert-success">✓ Interview completed successfully! Results have been downloaded.</div>';
+
+            formDefinition.analytics_contract.key_fields.forEach(fieldId => {
+                const value = formData[fieldId];
+                if (value) {
+                    const question = findQuestionById(fieldId);
+                    if (question) {
+                        const summaryItem = document.createElement('div');
+                        summaryItem.className = 'summary-item';
+                        summaryItem.innerHTML = `
+                            <div class="summary-label">${question.title}</div>
+                            <div class="summary-value">${Array.isArray(value) ? value.join(', ') : value}</div>
+                        `;
+                        summaryContent.appendChild(summaryItem);
+                    }
+                }
+            });
+
+            document.getElementById('formSection').classList.remove('active');
+            document.getElementById('summarySection').classList.add('active');
+        }
+
+        function findQuestionById(id) {
+            for (const section of formDefinition.sections) {
+                const question = section.questions.find(q => q.id === id);
+                if (question) return question;
+            }
+            return null;
+        }
+
+        function resetUpload() {
+            spreadsheetData = [];
+            currentAppData = {};
+            formData = {};
+            document.getElementById('uploadSection').style.display = 'block';
+            document.getElementById('appPicker').classList.remove('active');
+            document.getElementById('formSection').classList.remove('active');
+            document.getElementById('summarySection').classList.remove('active');
+            document.getElementById('navigation').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+        }
+
+        function startNewInterview() {
+            formData = {};
+            document.getElementById('summarySection').classList.remove('active');
+            document.getElementById('appPicker').classList.add('active');
+        }
+    </script>
+</body>
+</html>
