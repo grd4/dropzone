@@ -37,21 +37,30 @@ A web-based interview form with branching logic and spreadsheet prefill capabili
 
 ## Spreadsheet Format
 
-Your CSV/Excel file should include these columns for prefilling:
+Your CSV/Excel file should include these columns for prefilling (matches standard application inventory format):
 
-| Column Name | Description |
-|-------------|-------------|
-| `ApplicationName` | Name of the application |
-| `VendorName` | Vendor or manufacturer |
-| `HospitalSites` | Sites where app is deployed |
-| `RecordedIntegrationPriority` | Current priority classification |
+| Column Name | Description | Prefills Field |
+|-------------|-------------|----------------|
+| `Application Name` | Name of the application | Application Name |
+| `Vendor Name` | Vendor or manufacturer | Vendor Name |
+| `Site` | Sites where app is deployed | Hospital(s) / Site(s) |
+| `Department` | Department(s) using the application | Department |
+| `Application Owner` | Application owner contact | Application Owner |
+| `Project Manager` | Project manager contact | Project Manager |
+| `Business Owner` | Business owner contact | Business Owner |
+| `Application Status` | Current status | Application Status |
+| `Integration Priority` | Current priority classification | Integration Priority |
+| `Classification` | Type of application | (reference only) |
+| `Description / Use Case` | What the app does | (reference only) |
 
-**Example:**
+**Example from your inventory:**
 ```csv
-ApplicationName,VendorName,HospitalSites,RecordedIntegrationPriority
-Epic MyChart,Epic Systems,Memorial Hospital,Go-Live Critical
-Lab System,Cerner,All Sites,Post-Go-Live (with workarounds)
+Application Name,Vendor Name,Site,Department,Application Owner,Project Manager,Business Owner,Application Status,Integration Priority
+CARTS,AMN Healthcare,Glenwood,Multiple,Kalmaan May,,Ryan Haight,Active - Local Contract,Go-Live Critical
+RALS,Abbott,Florida Medical; Glenwood,Lab,Scott Linthicum,Mike Moran,,Active - HSA Contract,Post-Go-Live (with workarounds)
 ```
+
+**Note:** The form is flexible and will work with your existing spreadsheets even if some columns are missing. Empty columns won't affect the form functionality.
 
 ## Branching Logic
 

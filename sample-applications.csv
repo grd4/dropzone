@@ -1,9 +1,9 @@
-ApplicationName,VendorName,HospitalSites,RecordedIntegrationPriority
-Epic MyChart,Epic Systems,Memorial Hospital; St. Mary's,Go-Live Critical
-Laboratory Information System,Cerner,All Sites,Post-Go-Live (with workarounds)
-Radiology PACS,GE Healthcare,Memorial Hospital,At cutover (hard requirement)
-Pharmacy Management,McKesson,St. Mary's; Regional Center,Go-Live Critical
-Patient Portal,Internal Development,All Sites,Post Go-live (limited/no workarounds)
-Telehealth Platform,Zoom Healthcare,Memorial Hospital,Unknown - Under Review
-Medical Device Integration,Philips,All Sites,Go-Live Critical
-Revenue Cycle Management,Epic Systems,Corporate Office,Post-Go-Live (with workarounds)
+Last Updated,Vendor Name,Application Name,Vendor Type,Classification,Description / Use Case,Site,Department,Application Owner,Project Manager,Business Owner,Application Status,Integration Priority
+12/15/25,AMN Healthcare,CARTS,Software / Application,Administrative,Phone interpreting for non-English speaking patients,Glenwood,Multiple,Kalmaan May,,Ryan Haight,Active - Local Contract,Go-Live Critical
+12/16/25,Abbott (formerly Alere Informatics),RALS,Software / Application,Clinical/Ancillary,Integration for Lab POC testing (Blood glucose Blood gas),Florida Medical; Glenwood; HSA Coral Gables; MCSETX; North Shore Medical; Palmetto; St. Joe,Lab,Scott Linthicum,Mike Moran,,Active - HSA Contract,Post-Go-Live (with workarounds)
+12/03/25,Alert Media,Alert Media,Software / Application,Administrative,Billing Collection Agency,Multiple,IT,Keith Taylor,,Keith Taylor,Active - HSA Contract In Progress,Post Go-live (limited/no workarounds)
+12/16/25,Aquarius Net,TeraRecon,Software / Application,Clinical/Ancillary,Image post processing application,Florida Medical; Glenwood; HSA Coral Gables; Florida Medical; Glenwood,Radiology / PACS / CPACS,Michael Altman,,,Historical Only,Not Integrated
+11/18/25,B. Braun Medical Inc,DoseGuard,Software / Application,Clinical/Ancillary,IV Pump Software - Infusion Therapy & Pain Management,Florida Medical; Glenwood; MCSETX; North Shore Medical; Palmetto; St. Joe,Nursing; Pharmacy,Elizabeth Smith,Mike Moran,,Active - Local Contract,Go-Live Critical
+12/10/25,Cerner Corporation,PowerChart,Software / Application,Clinical/Ancillary,Electronic Health Record System,All Sites,Clinical,Jennifer Rodriguez,Sarah Johnson,Dr. Michael Chen,Active - Enterprise Agreement,Go-Live Critical
+11/25/25,GE Healthcare,Centricity PACS,Software / Application,Clinical/Ancillary,Picture Archiving and Communication System,Memorial Hospital; Regional Center,Radiology,David Martinez,,Lisa Thompson,Active - HSA Contract,Go-Live Critical
+12/01/25,Epic Systems,MyChart,Software / Application,Administrative,Patient Portal and Communication,All Sites,IT / Patient Services,Robert Anderson,Emily Davis,Mark Stevens,Active - Enterprise Agreement,Post-Go-Live (with workarounds)

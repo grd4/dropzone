@@ -312,6 +312,49 @@
             border: 1px solid #bee5eb;
         }
 
+        .prefill-preview {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .prefill-preview h3 {
+            font-size: 16px;
+            color: #856404;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prefill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+
+        .prefill-item {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 3px solid #ffc107;
+        }
+
+        .prefill-item-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #856404;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .prefill-item-value {
+            font-size: 14px;
+            color: #333;
+        }
+
         .summary-section {
             padding: 30px;
             display: none;
@@ -383,6 +426,7 @@
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
+            <div id="prefillPreview" style="margin-bottom: 20px;"></div>
             <div id="formContent"></div>
         </div>
 
@@ -407,12 +451,19 @@
     "prefill": {
       "supported": true,
       "parameters": [
-        "ApplicationName",
-        "VendorName",
-        "HospitalSites",
-        "RecordedIntegrationPriority"
+        "Application Name",
+        "Vendor Name",
+        "Site",
+        "Application Owner",
+        "Project Manager",
+        "Business Owner",
+        "Department",
+        "Integration Priority",
+        "Application Status",
+        "Classification",
+        "Description / Use Case"
       ],
-      "notes": "MS Forms supports URL-based prefill for some question types. Do not rely on prefilled values as truth; capture confirmation below."
+      "notes": "Prefills from application inventory spreadsheet. Verify all pre-populated information during interview."
     }
   },
   "sections": [
@@ -425,21 +476,56 @@
           "title": "Application Name",
           "type": "text",
           "required": true,
-          "prefill_param": "ApplicationName"
+          "prefill_param": "Application Name"
         },
         {
           "id": "VendorName",
           "title": "Vendor Name",
           "type": "text",
           "required": false,
-          "prefill_param": "VendorName"
+          "prefill_param": "Vendor Name"
         },
         {
           "id": "HospitalSites",
           "title": "Hospital(s) / Site(s)",
           "type": "text",
           "required": false,
-          "prefill_param": "HospitalSites"
+          "prefill_param": "Site"
+        },
+        {
+          "id": "Department",
+          "title": "Department",
+          "type": "text",
+          "required": false,
+          "prefill_param": "Department"
+        },
+        {
+          "id": "ApplicationOwner",
+          "title": "Application Owner",
+          "type": "text",
+          "required": false,
+          "prefill_param": "Application Owner"
+        },
+        {
+          "id": "ProjectManager",
+          "title": "Project Manager",
+          "type": "text",
+          "required": false,
+          "prefill_param": "Project Manager"
+        },
+        {
+          "id": "BusinessOwner",
+          "title": "Business Owner",
+          "type": "text",
+          "required": false,
+          "prefill_param": "Business Owner"
+        },
+        {
+          "id": "ApplicationStatus",
+          "title": "Application Status",
+          "type": "text",
+          "required": false,
+          "prefill_param": "Application Status"
         },
         {
           "id": "InterviewerName",
@@ -472,7 +558,7 @@
             "Unknown - Under Review",
             "(Blank)"
           ],
-          "prefill_param": "RecordedIntegrationPriority"
+          "prefill_param": "Integration Priority"
         },
         {
           "id": "ConfirmedOperationalTiming",
@@ -919,11 +1005,24 @@
 
             spreadsheetData.forEach((row, index) => {
                 const appName = row.ApplicationName || row['Application Name'] || row.Application || `Row ${index + 1}`;
+                const vendor = row.VendorName || row['Vendor Name'] || '';
+                const site = row.Site || row.HospitalSites || '';
+
+                let displayText = appName;
+                if (vendor) displayText += ` (${vendor})`;
+                if (site && site.length < 30) displayText += ` - ${site}`;
+
                 const option = document.createElement('option');
                 option.value = index;
-                option.textContent = appName;
+                option.textContent = displayText;
                 appSelect.appendChild(option);
             });
+
+            const infoMsg = document.createElement('div');
+            infoMsg.className = 'alert alert-info';
+            infoMsg.style.marginTop = '15px';
+            infoMsg.innerHTML = `✓ Loaded ${spreadsheetData.length} applications from spreadsheet`;
+            document.getElementById('appPicker').appendChild(infoMsg);
 
             document.getElementById('uploadSection').style.display = 'none';
             document.getElementById('appPicker').classList.add('active');
@@ -952,6 +1051,39 @@
         }
 
         function renderForm() {
+            // Render prefill preview
+            const prefillPreview = document.getElementById('prefillPreview');
+            let prefillHTML = '<div class="prefill-preview"><h3>📋 Pre-filled from Spreadsheet</h3><div class="prefill-grid">';
+
+            const prefillFields = [
+                { key: 'Application Name', label: 'Application' },
+                { key: 'Vendor Name', label: 'Vendor' },
+                { key: 'Site', label: 'Site(s)' },
+                { key: 'Department', label: 'Department' },
+                { key: 'Application Owner', label: 'App Owner' },
+                { key: 'Project Manager', label: 'PM' },
+                { key: 'Business Owner', label: 'Business Owner' },
+                { key: 'Integration Priority', label: 'Priority' },
+                { key: 'Application Status', label: 'Status' }
+            ];
+
+            let hasAnyPrefill = false;
+            prefillFields.forEach(field => {
+                const value = currentAppData[field.key] || currentAppData[field.key.replace(/ /g, '')] || '';
+                if (value) {
+                    hasAnyPrefill = true;
+                    prefillHTML += `
+                        <div class="prefill-item">
+                            <div class="prefill-item-label">${field.label}</div>
+                            <div class="prefill-item-value">${value}</div>
+                        </div>`;
+                }
+            });
+
+            prefillHTML += '</div></div>';
+            prefillPreview.innerHTML = hasAnyPrefill ? prefillHTML : '';
+
+            // Render form
             const formContent = document.getElementById('formContent');
             formContent.innerHTML = '';
 
